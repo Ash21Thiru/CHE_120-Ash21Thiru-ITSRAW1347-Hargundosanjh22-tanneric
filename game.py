@@ -483,5 +483,149 @@ player2 = Character('goku1', 2, 600, 200, 2, 5) #goku
 
 
 
+#--------------------
+run = True
+# The loop will run until we set run = False
+while run:
+    if start_game == False:
+        #draw meny
+        screen.fill(beige)
+    
+
+
+            #in the draw method we have a code that checks if button is clicked it sets start_game to True (starts game)
+        if clicked:
+            start_game = True
+            clicked = False
+   
+
+    else:
+
+        #frame rate:
+        clock.tick(FPS)
+        draw_bg()
+
+        
+        player1.draw()
+        #arguments  (moving_left, moving_right)
+        player1.move(moving_left,moving_right)
+        player1.update()
+
+
+        player2.draw()
+        #arguments  (moving_left, moving_right)
+        player2.move(moving_left2,moving_right2)
+        player2.update()  
+    
+        
+
+
+        if player1.alive: #only works if player is alive
+            #checking if there is any movment:
+            
+            if player1.air_born:
+                player1.update_action(2)#2 -> means jump
+            elif moving_left or moving_right:
+                player1.update_action(1)#1 -> means run
+            else:
+                #if he is not moving
+                player1.update_action(0) #0 -> means idle
+            #player1.move(moving_left,moving_right)
+
+        if player2.alive: #only works if player is alive
+            #checking if there is any movment:
+            
+            if player2.air_born:
+                player2.update_action(2)#2 -> means jump
+            elif moving_left2 or moving_right2:
+                player2.update_action(1)#1 -> means run
+            else:
+                #if he is not moving
+                player2.update_action(0) #0 -> means idle
+            #player1.move(moving_left,moving_right)
+
+
+
+
+
+
+
+
+
+    # Whenever an action is performed, this will register it
+    for event in pygame.event.get():
+        # If we click the exit button, it will end the loop
+        if event.type == pygame.QUIT:
+            run = False
+        
+            
+            
+        #looks for any keyboard buttons being pressed
+        if event.type == pygame.KEYDOWN:
+            #if the a_key is pressed:
+            if event.key == pygame.K_a:
+                moving_left = True
+            #if the d_key is pressed:
+            if event.key == pygame.K_d:
+                moving_right = True
+            #if escape button is pressed ----> quit game
+            if event.key == pygame.K_ESCAPE:
+                run = False
+            #checking if w is pressed and player is alive
+            if event.key == pygame.K_w and player1.alive:
+                player1.jump = True
+                print("jump")
+   
+                      
+            #if enter is pressed to start game
+            if event.key == pygame.K_RETURN or event.key == pygame.K_BACKSPACE:
+            
+                clicked = True
+                print("game start")
+            
+        #---------------------Player 2 controls
+            if event.key == pygame.K_LEFT:
+                moving_left2 = True
+            #if the d_key is pressed:
+            if event.key == pygame.K_RIGHT:
+                moving_right2 = True
+            #checking if w is pressed and player is alive
+            if event.key == pygame.K_UP and player2.alive:
+                player2.jump = True
+                print("jump")
+           
+
+            
+            
+        #if keyboard button is release:
+        if event.type == pygame.KEYUP:
+            #if the a_key is up:
+            if event.key == pygame.K_a:
+                moving_left = False
+            #if the d_key is up:
+            if event.key == pygame.K_d:
+                moving_right = False
+            #if the space_key is up
+
+                
+                
+                
+        #---------------------Player 2 controls
+            #if the a_key is up:
+            if event.key == pygame.K_LEFT:
+                moving_left2 = False
+            #if the d_key is up:
+            if event.key == pygame.K_RIGHT:
+                moving_right2 = False
+
+                
+                 
+
+
+    pygame.display.update()
+# Clean up and exit the game
+pygame.quit()
+exit()
+
 
 
