@@ -1,3 +1,5 @@
+#Ashwin Thirukkumaran, Surya Kamalakannan, Hargun Dosanjh & Eric Tran
+#all the imports
 import pygame
 import random
 from pygame import mixer
@@ -5,7 +7,7 @@ import time
 
 
 
-# Initializing pygame
+# Initializing pygame/mxier
 pygame.init()
 mixer.init()
 
@@ -38,36 +40,53 @@ clicked = False
 #loading music and sounds
 #background music
 
-#pygame.mixer.music.load('music_sound/background_music.mp3')
-#pygame.mixer.music.load('music_sound/ken_karson.mp3')
 pygame.mixer.music.load('music_sound/clean_music.mp3')
 pygame.mixer.music.set_volume(0.3) #volume intensity
-pygame.mixer.music.play(-1,0.7,6000) #arguments(amount of times u want to loop, delay, duration of fade)
+pygame.mixer.music.play(-1,0.1,6000) #arguments(amount of times u want to loop, delay, duration of fade)
                                                   #^ -1 means forever                       ^5000 = 5s
                                                   
 #sound affects
-
+slice_attack_fx = pygame.mixer.Sound('music_sound/slice_attack.mp3')
+slice_attack_fx.set_volume(0.3)
 jump_fx = pygame.mixer.Sound('music_sound/jump.mp3')
 jump_fx.set_volume(0.3)
 super_sayin_fx = pygame.mixer.Sound('music_sound/super_sayin_power_up.mp3')
 super_sayin_fx.set_volume(0.7)
-   
-                                           
+instant_T = pygame.mixer.Sound('music_sound/instant_T.mp3')
+instant_T.set_volume(0.1)
+healing_fx = pygame.mixer.Sound('music_sound/mini_healing.mp3')
+healing_fx.set_volume(10)                                              
 
 
 
 
 
+
+#loading images
+# slice attack (zoro attack)
+slice_img = pygame.image.load('shoot/zoro1_4.png').convert_alpha() # convert_alpha makes better images
+aura_img = pygame.image.load('shoot/aura.png').convert_alpha() # convert_alpha makes better images
+aura_img = pygame.transform.scale(aura_img, (int(aura_img.get_width() * 0.06), int(aura_img.get_height() * 0.06)))#scaling the image
 #corono image
 powerUp_1 = pygame.image.load('images/drink.png').convert_alpha() 
 powerUp_1 = pygame.transform.scale(powerUp_1, (int(powerUp_1.get_width() * 0.2), int(powerUp_1.get_height() * 0.2)))#scaling the image
 #rice image
 powerUp_2 = pygame.image.load('images/rice.png').convert_alpha() 
-powerUp_2 = pygame.transform.scale(powerUp_2, (int(powerUp_2.get_width() * 0.2), int(powerUp_2.get_height() * 0.2)))#scaling the image
+powerUp_2 = pygame.transform.scale(powerUp_2, (int(powerUp_2.get_width() * 0.25), int(powerUp_2.get_height() * 0.25)))#scaling the image
 
 #background image
-background_img = pygame.image.load('images/background.jpg').convert_alpha()
-background_img = pygame.transform.scale(background_img, (int(background_img.get_width() * 4), int(background_img.get_height() * 4)))#scaling the image
+#background_img = pygame.image.load('images/Background.png').convert_alpha()
+background_img = pygame.image.load('images/BG.png').convert_alpha()
+background_img = pygame.transform.scale(background_img, (int(background_img.get_width() *2), int(background_img.get_height() *3.19)))#scaling the image
+
+#starting screen images
+title_img = pygame.image.load('images/title.png').convert_alpha()
+zoro_start_img = pygame.image.load('images/zoro_player.png').convert_alpha()
+zoro_start_img = pygame.transform.scale(zoro_start_img, (int(zoro_start_img.get_width() *0.8), int(zoro_start_img.get_height() *0.8)))#scaling the image
+goku_start_img = pygame.image.load('images/goku_player.png').convert_alpha()
+goku_start_img = pygame.transform.scale(goku_start_img, (int(goku_start_img.get_width() *0.8), int(goku_start_img.get_height() *0.8)))#scaling the image
+vs_img = pygame.image.load('images/background.jpg').convert_alpha()
+vs_img = pygame.transform.scale(vs_img, (int(vs_img.get_width() *1.3), int(vs_img.get_height() *1.3)))#scaling the image
 
 
 
@@ -101,6 +120,9 @@ gold = (255, 215, 0)
 def draw_bg():
     screen.fill(background_color)
     screen.blit(background_img, (0, 0))
+#drawing the background for starting screen
+def VS_BG():
+    screen.blit(vs_img,(-400,-500))
 
 
 
@@ -125,6 +147,8 @@ class Character(pygame.sprite.Sprite):
         self.max_health = self.health
         #giving speed:
         self.speed = speed
+        #shooting cooldown timer 
+        self.attack_cooldown = 0
         #direction (1 means right; -1 means left)            
         self.direction = 1
         self.flip = False
@@ -232,7 +256,7 @@ class Character(pygame.sprite.Sprite):
         self.goku_animation_list.append(temp_list)  
         temp_list = []  #resets temp list
         #------------------------ Attack Animation
-        for i in range(6):
+        for i in range(8):
         # loading in character  
             img = pygame.image.load(f'animations/goku_images/attack/goku1_{i}.png').convert_alpha() #by doing \f'{self.char_name}\ we are able to put different names and use different images
         # scaling image size
@@ -285,7 +309,7 @@ class Character(pygame.sprite.Sprite):
         self.goku_super_animation_list.append(temp_list)  
         temp_list = []  #resets temp list
         #------------------------ Attack Animation
-        for i in range(12):
+        for i in range(8):
         # loading in character  
             img = pygame.image.load(f'animations/goku_super_images/attack/goku1_super_{i}.png').convert_alpha() #by doing \f'{self.char_name}\ we are able to put different names and use different images
         # scaling image size
@@ -303,9 +327,17 @@ class Character(pygame.sprite.Sprite):
         #storing the animations in the self.animation_list
             temp_list.append(img) #this will add all out images into one array
         self.goku_super_animation_list.append(temp_list)   
+         
             
-        
-   
+            
+            
+            
+            
+            
+            
+            
+            
+            
             
             
         
@@ -349,6 +381,10 @@ class Character(pygame.sprite.Sprite):
     def update(self):
         self.animation_update()
         self.check_alive()
+        #update cooldown
+        if self.attack_cooldown > 0:
+            #if fired a shot it lower power shot
+            self.attack_cooldown -= 1 
     #speed method
     def move(self, moving_left, moving_right):
         #change in distance variables
@@ -389,9 +425,16 @@ class Character(pygame.sprite.Sprite):
 
         #check if on floor
         if self.rect.bottom + delta_y > 730: #if it is airborn then:
-            delta_y = 730 - self.rect.bottom #this stops them at the floor
+            delta_y = 729 - self.rect.bottom #this stops them at the floor
             self.air_born = False  #resets and says character is no longer in the air
             
+        #hitting the left walls
+        if self.rect.left + delta_x <= 0:
+            delta_x = 0.1
+            
+        #hitting the right walls
+        if self.rect.right + delta_x > SCREEN_WIDTH:
+            delta_x = SCREEN_WIDTH - self.rect.right
 
 
 
@@ -400,20 +443,20 @@ class Character(pygame.sprite.Sprite):
         self.rect.x += delta_x
         self.rect.y += delta_y
     
-    #attack methdod↓↓↓↓↓
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    #attack methdod
+    def shot(self):
+        if self.attack_cooldown == 0:
+            self.attack_cooldown = 45
+        #sets a variable with the parameters of our class
+            if self.char_name == 'zoro1':
+                slice_attack = Attack(self.rect.centerx + (120*self.direction) - 10, self.rect.centery + (40), self.direction, self.char_name) #accessing the x ,y & direction of player1 (attributes which were already given to player1)
+            elif self.char_name == 'goku1':
+                slice_attack = Attack(self.rect.centerx + (120*self.direction) , self.rect.centery + (0), self.direction, self.char_name) #accessing the x ,y & direction of player1 (attributes which were already given to player1)
+                                                         
+            Attack_group.add(slice_attack) #adding slice_attack to the group
+             #sound FX
+            slice_attack_fx.play()
+
 # Super Saiyan 3 seconds methods:
     def activate_super(self, current_time):
         self.is_super = True  # Set the player's super state to active.
@@ -431,9 +474,9 @@ class Character(pygame.sprite.Sprite):
                 self.deactivate_super()  #deactivate the super
             
 
-    
-    
-    
+
+
+
     #animation method
     def animation_update(self):
         #explnation: my flipping through all the images fast enough it will become an animation
@@ -481,6 +524,7 @@ class Character(pygame.sprite.Sprite):
                     self.index_frame = len(self.goku_animation_list[self.action]) - 1
                 else:
                     self.index_frame = 0
+                    
         
         elif which_character == 2 and player2.is_super:
             animation_cooldown = 70
@@ -523,10 +567,8 @@ class Character(pygame.sprite.Sprite):
         screen.blit(pygame.transform.flip(self.image, self.flip,False),self.rect)
                                 #self.image -> what image             self.rect -> location of the image
 
-        #background
 
-
-        pygame.draw.rect(screen, beige, self.rect, 1) #remove/delete later (puts border around players)
+        
 
 
 
@@ -546,7 +588,10 @@ class Character(pygame.sprite.Sprite):
             self.speed = 0
             self.alive = False
             self.update_action(4)
-
+            screen.blit(text1, textRect1)
+        
+            
+    
 
 #------------------------
 
@@ -561,10 +606,12 @@ class Item(pygame.sprite.Sprite):
     
     def update(self):    
             #pygame.sprite.collide_rect checks the collison between player
-            #check if there is collision between item(self) rectangle and player
+            
+            #check if there is collision between item(self) rectangle and player1(zoro)
         if pygame.sprite.collide_rect(self, player1):
             #check which powerUp 
             if self.item_type == 'Drink':
+                healing_fx.play()
                 if player1.health >= 50:   #max health is 100
                     player1.health = player1.max_health
                 else:
@@ -576,9 +623,9 @@ class Item(pygame.sprite.Sprite):
                 None
             self.kill()
             
-            
+            #check if there is collision between item(self) rectangle and player2(goku)
         if pygame.sprite.collide_rect(self, player2):  
-
+            #if goku collides with rice -> make super sayin
             if self.item_type == 'Rice':
                 #sets player.is_super to True
                 player2.is_super = True
@@ -634,13 +681,63 @@ class HealthBar():
             #since we want our blue bar ontop of the red bar...we draw that after the red bar is created
             pygame.draw.rect(screen, self.color, (self.x, self.y, 150 * ratio, 20))
                                                                     #^if your health is 80%, then by multiplying 150 by 0.8, it only displays 80% of the bar
+
                         
-                        
 
 
 
 
 
+#slice class
+class Attack(pygame.sprite.Sprite): 
+    def __init__(self, x, y, direction, character):
+        pygame.sprite.Sprite.__init__(self) #inheriting the methods from sprite class
+        self.character = character
+
+        if self.character == 'zoro1': #if zoro then image is:
+            self.image = slice_img 
+        elif self.character == 'goku1': #if goku then image is:
+            self.image = aura_img
+        
+            
+        self.speed = 7
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        self.direction = direction
+        
+    
+    
+    def update(self):
+      
+        
+        
+        #move bullet
+        self.rect.x += (self.direction * self.speed)
+        #check if bullet is off screen
+        if self.rect.right < 0 or self.rect.left > (SCREEN_WIDTH):
+            self.kill()
+        
+
+        if pygame.sprite.spritecollide(player1, Attack_group, False): #detects if the attack has hit another player
+            if player1.alive:
+                player1.health -= 10
+                print("p1" , player1.health)
+                self.kill() #it will delete the attack if true
+        
+        if pygame.sprite.spritecollide(player2, Attack_group, False): #detects if the attack has hit another player
+            if player2.alive:
+                #If Goku is super sayin then he takes no damage
+                if player2.is_super:
+                    instant_T.play()
+                    None
+                else:
+                    player2.health -= 10
+                    print("p2" , player2.health)
+                    self.kill() #it will delete the attack if true
+
+
+#By putting my attack slices in a group so we can apply functions/methods to them all
+Attack_group = pygame.sprite.Group()
 powerUp_group = pygame.sprite.Group()
 
 
@@ -669,12 +766,22 @@ player1 = Character('zoro1', 1, 200, 200, 2, 5)
 player2 = Character('goku1', 2, 600, 200, 2, 5)
 #inilizing characters (x, y , current health, max health)
 health_bar = HealthBar(10, 10, player1.health, player1.health, red, red)
-health_bar2 = HealthBar(10, 50, player2.health, player2.health, red, gold)
+health_bar2 = HealthBar(840, 10, player2.health, player2.health, red, gold)
                                                                 #first color is what color the health bar should be normally
                                                                 #second color is the health bar's color when goku is super sayin
 
 
+font = pygame.font.Font('freesansbold.ttf', 45)
+ 
+# create a text surface object,
+# on which text is drawn on it.
+text = font.render('Press Enter/Return', True, beige)
+textRect = text.get_rect()
+textRect.center = (500, 700)
 
+text1 = font.render('Press Escape', True, beige)
+textRect1 = text1.get_rect()
+textRect1.center = (500, 150)
 
 
 
@@ -687,12 +794,16 @@ run = True
 while run:
     if start_game == False:
         #draw meny
-        screen.fill(beige)
-    
-
-
+        #screen.fill((51, 51, 77))
+        VS_BG()
+        screen.blit(title_img, (40,50))
+        screen.blit(goku_start_img, (600,300))
+        screen.blit(zoro_start_img, (30,300))
+        
+        screen.blit(text, textRect)
+        
             #in the draw method we have a code that checks if button is clicked it sets start_game to True (starts game)
-        if clicked: #when enter is clicked
+        if clicked:
             start_game = True
             clicked = False
    
@@ -703,11 +814,15 @@ while run:
         clock.tick(FPS)
         draw_bg()
 
-
-        #checking is goku is super:
+       #checking is goku is super:
         current_time = time.time() #getting current time
         player2.update_player_state(current_time)#checks if player2 is super
 
+
+
+        #update and draw slice attack
+        Attack_group.update()
+        Attack_group.draw(screen)
 
 
         player1.draw()
@@ -730,8 +845,10 @@ while run:
 
         if player1.alive: #only works if player is alive
             #checking if there is any movment:
-            
-            if player1.air_born:
+            if shoot:
+                player1.shot()
+                player1.update_action(3)#3 -> means attack
+            elif player1.air_born:
                 player1.update_action(2)#2 -> means jump
             elif moving_left or moving_right:
                 player1.update_action(1)#1 -> means run
@@ -742,8 +859,10 @@ while run:
 
         if player2.alive: #only works if player is alive
             #checking if there is any movment:
-            
-            if player2.air_born:
+            if shoot2:
+                player2.shot()
+                player2.update_action(3)#3 -> means attack
+            elif player2.air_born:
                 player2.update_action(2)#2 -> means jump
             elif moving_left2 or moving_right2:
                 player2.update_action(1)#1 -> means run
@@ -788,9 +907,14 @@ while run:
             #checking if w is pressed and player is alive
             if event.key == pygame.K_w and player1.alive:
                 player1.jump = True
-                print("jump")             
+                print("jump")
+            #shoot button
+            if event.key == pygame.K_SPACE:
+                shoot = True
+                print("shoot")              
             #if enter is pressed to start game
             if event.key == pygame.K_RETURN or event.key == pygame.K_BACKSPACE:
+            
                 clicked = True
                 print("game start")
             
@@ -804,6 +928,10 @@ while run:
             if event.key == pygame.K_UP and player2.alive:
                 player2.jump = True
                 print("jump")
+            #shoot button
+            if event.key == pygame.K_RSHIFT:
+                shoot2 = True
+                print("shoot")
 
             
             
@@ -815,17 +943,22 @@ while run:
             #if the d_key is up:
             if event.key == pygame.K_d:
                 moving_right = False
-
+            #if the space_key is up
+            if event.key == pygame.K_SPACE:
+                shoot = False
+                
                 
                 
         #---------------------Player 2 controls
-            #if the l_arrow_key is up:
+            #if the a_key is up:
             if event.key == pygame.K_LEFT:
                 moving_left2 = False
-            #if the r_arrow_key is up:
+            #if the d_key is up:
             if event.key == pygame.K_RIGHT:
                 moving_right2 = False
-
+            #if the space_key is up
+            if event.key == pygame.K_RSHIFT:
+                shoot2 = False
                 
                  
 
@@ -837,3 +970,8 @@ exit()
 
 
      
+        
+        
+
+
+       
