@@ -256,7 +256,7 @@ class Character(pygame.sprite.Sprite):
         self.goku_animation_list.append(temp_list)  
         temp_list = []  #resets temp list
         #------------------------ Attack Animation
-        for i in range(6):
+        for i in range(8):
         # loading in character  
             img = pygame.image.load(f'animations/goku_images/attack/goku1_{i}.png').convert_alpha() #by doing \f'{self.char_name}\ we are able to put different names and use different images
         # scaling image size
@@ -309,7 +309,7 @@ class Character(pygame.sprite.Sprite):
         self.goku_super_animation_list.append(temp_list)  
         temp_list = []  #resets temp list
         #------------------------ Attack Animation
-        for i in range(6):
+        for i in range(8):
         # loading in character  
             img = pygame.image.load(f'animations/goku_super_images/attack/goku1_super_{i}.png').convert_alpha() #by doing \f'{self.char_name}\ we are able to put different names and use different images
         # scaling image size
